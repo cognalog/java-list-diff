@@ -1,9 +1,9 @@
 package io.cognalog;
 
-import io.cognalog.Snake.Direction;
-import io.cognalog.Snake.Point;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
+import io.cognalog.Snake.Direction;
+import io.cognalog.Snake.Point;
 
 import java.util.Comparator;
 import java.util.List;
@@ -24,7 +24,12 @@ import static com.google.common.collect.Lists.newArrayList;
  * @author Tyrone Hinderson (╯°□°）╯︵ ┻━┻
  */
 public final class MyersDiffProducer<T> implements DiffProducer<T> {
+    static final int DEFAULT_LIMIT = -1;
     private final int limit;
+
+    public MyersDiffProducer() {
+        this(DEFAULT_LIMIT);
+    }
 
     public MyersDiffProducer(final int limit) {
         this.limit = limit;

@@ -17,8 +17,8 @@ import static io.cognalog.DiffFacts.DiffLine.TYPE;
  * @author Tyrone Hinderson (╯°□°）╯︵ ┻━┻
  */
 public class DiffFacts<T> {
-    private static final char DELETE_CHAR = 'L';
-    private static final char INSERT_CHAR = 'R';
+    static final char DELETE_CHAR = 'L';
+    static final char INSERT_CHAR = 'R';
 
     private final List<T> insertions = newArrayList();
     private final List<T> deletions = newArrayList();

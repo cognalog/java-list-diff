@@ -5,7 +5,7 @@ import com.google.common.base.Objects;
 
 /**
  * Object representing a single insertion or deletion as well as a sequence of 0 or more matching elements.
- *
+ * <p>
  * <p>
  * This is the basic molecule of the edit script we are generating. Each {@link Point} is an atom in this analogy.
  * <ul>
@@ -25,22 +25,22 @@ final class Snake {
     private final Point mid;
     private final Point end;
     private final Direction direction;
-    public final int edits;
+    final int edits;
 
     static class Point {
         private final int x;
         private final int y;
 
-        public Point(int x, int y) {
+        Point(int x, int y) {
             this.x = x;
             this.y = y;
         }
 
-        public int getX() {
+        int getX() {
             return x;
         }
 
-        public int getY() {
+        int getY() {
             return y;
         }
 
@@ -69,7 +69,7 @@ final class Snake {
         }
     }
 
-    public static enum Direction {
+    public enum Direction {
         FORWARD, REVERSE
     }
 
@@ -127,11 +127,12 @@ final class Snake {
 
     @Override
     public int hashCode() {
+        final int hashConstant = 31;
         int result = start != null ? start.hashCode() : 0;
-        result = 31 * result + (mid != null ? mid.hashCode() : 0);
-        result = 31 * result + (end != null ? end.hashCode() : 0);
-        result = 31 * result + direction.hashCode();
-        result = 31 * result + edits;
+        result = hashConstant * result + (mid != null ? mid.hashCode() : 0);
+        result = hashConstant * result + (end != null ? end.hashCode() : 0);
+        result = hashConstant * result + direction.hashCode();
+        result = hashConstant * result + edits;
         return result;
     }
 

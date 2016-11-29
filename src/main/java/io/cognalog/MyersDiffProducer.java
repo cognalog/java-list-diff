@@ -1,6 +1,5 @@
 package io.cognalog;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import io.cognalog.Snake.Direction;
 import io.cognalog.Snake.Point;
@@ -23,15 +22,15 @@ import static com.google.common.collect.Lists.newArrayList;
  *
  * @author Tyrone Hinderson (╯°□°）╯︵ ┻━┻
  */
-public final class MyersDiffProducer<T> implements DiffProducer<T> {
-    static final int DEFAULT_LIMIT = -1;
+final class MyersDiffProducer<T> implements DiffProducer<T> {
+    private static final int DEFAULT_LIMIT = -1;
     private final int limit;
 
-    public MyersDiffProducer() {
+    MyersDiffProducer() {
         this(DEFAULT_LIMIT);
     }
 
-    public MyersDiffProducer(final int limit) {
+    MyersDiffProducer(final int limit) {
         this.limit = limit;
     }
 
@@ -69,7 +68,7 @@ public final class MyersDiffProducer<T> implements DiffProducer<T> {
     }
 
     static <T> List<Snake> getSnakes(final List<T> seq1, final List<T> seq2, final int limit,
-            final Comparator<? super T> comparator) {
+                                     final Comparator<? super T> comparator) {
         List<Snake> snakes = newArrayList();
         getSnakesHelper(seq1, seq2, snakes, limit, comparator);
         return snakes;
@@ -79,19 +78,14 @@ public final class MyersDiffProducer<T> implements DiffProducer<T> {
      * Determines the edit script from one {@link List} to another by finding their middle snake and recursing upon the
      * sequence portions before and after the middle snake.
      *
-     * @param seq1
-     *            the "original" sequence
-     * @param seq2
-     *            the "revision" sequence
-     * @param results
-     *            the list that will hold the snakes
-     * @param comparator
-     *            {@link Comparator} to determine whether two elements are equal
-     * @param <T>
-     *            the type of element in each sequence
+     * @param seq1       the "original" sequence
+     * @param seq2       the "revision" sequence
+     * @param results    the list that will hold the snakes
+     * @param comparator {@link Comparator} to determine whether two elements are equal
+     * @param <T>        the type of element in each sequence
      */
     private static <T> void getSnakesHelper(final List<T> seq1, final List<T> seq2, final List<Snake> results,
-            final int limit, final Comparator<? super T> comparator) {
+                                            final int limit, final Comparator<? super T> comparator) {
         int s1Length = seq1.size();
         int s2Length = seq2.size();
         if (conditionalTruncate(results, limit)) {
@@ -135,8 +129,8 @@ public final class MyersDiffProducer<T> implements DiffProducer<T> {
             }
             results.add(new Snake(new Point(middleSnake.getStart().getX() + rx, middleSnake.getStart().getY() + ry),
                     new Point(middleSnake.getMid().getX() + rx, middleSnake.getMid().getY() + ry), new Point(
-                            middleSnake.getEnd().getX() + rx, middleSnake.getEnd().getY() + ry), middleSnake
-                            .getDirection(), results.get(results.size() - 1).edits + 1));
+                    middleSnake.getEnd().getX() + rx, middleSnake.getEnd().getY() + ry), middleSnake
+                    .getDirection(), results.get(results.size() - 1).edits + 1));
             getSnakesHelper(seq1.subList(middleSnake.getEnd().getX(), s1Length),
                     seq2.subList(middleSnake.getEnd().getY(), s2Length), results, limit, comparator);
         } else if (middleSnake.edits == 1) { // definitely forward snake: there is exactly one more edit.
@@ -146,15 +140,15 @@ public final class MyersDiffProducer<T> implements DiffProducer<T> {
                     middleSnake.getStart().getY() + ry), middleSnake.getDirection(), recentSnake.edits));
             results.add(new Snake(new Point(middleSnake.getStart().getX() + rx, middleSnake.getStart().getY() + ry),
                     new Point(middleSnake.getMid().getX() + rx, middleSnake.getMid().getY() + ry), new Point(
-                            middleSnake.getEnd().getX() + rx, middleSnake.getEnd().getY() + ry), middleSnake
-                            .getDirection(), recentSnake.edits + 1));
+                    middleSnake.getEnd().getX() + rx, middleSnake.getEnd().getY() + ry), middleSnake
+                    .getDirection(), recentSnake.edits + 1));
         } else if (middleSnake.edits == 0) { // The two sequences are identical: there are no more edits
             final int rx = recentSnake.getEnd().getX();
             final int ry = recentSnake.getEnd().getY();
             results.add(new Snake(new Point(middleSnake.getStart().getX() + rx, middleSnake.getStart().getY() + ry),
                     new Point(middleSnake.getMid().getX() + rx, middleSnake.getMid().getY() + ry), new Point(
-                            middleSnake.getEnd().getX() + rx, middleSnake.getEnd().getY() + ry), middleSnake
-                            .getDirection(), recentSnake.edits));
+                    middleSnake.getEnd().getX() + rx, middleSnake.getEnd().getY() + ry), middleSnake
+                    .getDirection(), recentSnake.edits));
         } else {
             throw new IllegalStateException("Encountered middle snake with negative edits: " + middleSnake.edits);
         }
@@ -185,15 +179,11 @@ public final class MyersDiffProducer<T> implements DiffProducer<T> {
      * Runs both the forward and reverse furthest-snake algorithms, and finds the snake at which their paths overlap. It
      * has been proven that this snake must be part of the diff solution.
      *
-     * @param seq1
-     *            the first sequence
-     * @param seq2
-     *            the second sequence
-     * @param <T>
-     *            the type of element in the sequences
+     * @param seq1 the first sequence
+     * @param seq2 the second sequence
+     * @param <T>  the type of element in the sequences
      * @return the "middle snake" where the two algorithm results overlap
      */
-    @VisibleForTesting
     static <T> Snake getMiddleSnake(final List<T> seq1, final List<T> seq2, final Comparator<? super T> comparator) {
         final int s1Length = seq1.size();
         final int s2Length = seq2.size();

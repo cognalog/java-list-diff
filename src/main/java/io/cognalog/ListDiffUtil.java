@@ -23,9 +23,9 @@ public final class ListDiffUtil {
 
     private static <T> DiffProducer<T> getDiffProducer(final DiffRequest<T> request) {
         if (request.isDataPresorted()) {
-            return new StreamingDiffProducer<T>();
+            return new StreamingDiffProducer<>();
         } else {
-            return new MyersDiffProducer<T>(request.getLimit());
+            return new MyersDiffProducer<>(request.getLimit());
         }
     }
 
@@ -34,12 +34,9 @@ public final class ListDiffUtil {
         if (supplied == null) {
             Preconditions.checkArgument(Comparable.class.isAssignableFrom(request.getType()),
                     "If no comparator is supplied, then list items must implement Comparable.");
-            return new Comparator<T>() {
-                @Override
-                public int compare(final T o1, final T o2) {
-                    // this will be alright because of the check above.
-                    return ((Comparable<T>) o1).compareTo(o2);
-                }
+            return (o1, o2) -> {
+                // this will be alright because of the check above.
+                return ((Comparable<T>) o1).compareTo(o2);
             };
         }
         return supplied;

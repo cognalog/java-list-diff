@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author Tyrone Hinderson (╯°□°）╯︵ ┻━┻
  */
-public final class StreamingDiffProducer<T> implements DiffProducer<T> {
+final class StreamingDiffProducer<T> implements DiffProducer<T> {
 
     public DiffFacts<T> diff(final List<T> original, final List<T> edited, final Comparator<T> comparator) {
         final DiffFacts<T> diffResult = new DiffFacts<T>();

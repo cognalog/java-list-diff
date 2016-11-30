@@ -1,7 +1,7 @@
 package io.cognalog;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 
 /**
  * Object representing a single insertion or deletion as well as a sequence of 0 or more matching elements.
@@ -27,11 +27,13 @@ final class Snake {
     private final Direction direction;
     final int edits;
 
-    static class Point {
+    static final class Point {
         private final int x;
         private final int y;
 
         Point(int x, int y) {
+            Preconditions.checkArgument(x >= 0, "x is negative");
+            Preconditions.checkArgument(y >= 0, "y is negative");
             this.x = x;
             this.y = y;
         }
@@ -48,7 +50,7 @@ final class Snake {
         public boolean equals(Object o) {
             if (this == o)
                 return true;
-            if (o == null || getClass() != o.getClass())
+            if (!(o instanceof Point))
                 return false;
 
             Point point = (Point) o;
@@ -67,9 +69,17 @@ final class Snake {
             result = 31 * result + y;
             return result;
         }
+
+        @Override
+        public String toString() {
+            return "Point{" +
+                    "x=" + x +
+                    ", y=" + y +
+                    '}';
+        }
     }
 
-    public enum Direction {
+    enum Direction {
         FORWARD, REVERSE
     }
 
@@ -79,6 +89,14 @@ final class Snake {
 
     @VisibleForTesting
     Snake(final Point start, final Point mid, final Point end, final Direction direction, final int edits) {
+        // validate points
+        if (direction == Direction.FORWARD) {
+            Preconditions.checkArgument(mid.getX() - end.getX() == mid.getY() - end.getY(),
+                    String.format("Forward snake: end point %s is not diagonal from mid point %s", end, mid));
+        } else {
+            Preconditions.checkArgument(mid.getX() - start.getX() == mid.getY() - start.getY(),
+                    String.format("Reverse snake: start point %s is not diagonal from mid point %s", start, mid));
+        }
         this.start = start;
         this.mid = mid;
         this.end = end;
@@ -106,7 +124,7 @@ final class Snake {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (o == null || getClass() != o.getClass())
+        if (!(o instanceof Snake))
             return false;
 
         Snake snake = (Snake) o;
@@ -138,12 +156,12 @@ final class Snake {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this) //
-                .add("direction", direction) //
-                .add("start", start) //
-                .add("mid", mid) //
-                .add("end", end) //
-                .add("edits", edits) //
-                .toString();
+        return "Snake{" +
+                "start=" + start +
+                ", mid=" + mid +
+                ", end=" + end +
+                ", direction=" + direction +
+                ", edits=" + edits +
+                '}';
     }
 }
